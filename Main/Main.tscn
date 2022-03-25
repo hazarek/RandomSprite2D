@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b82h03dk1t7y6"]
+
+[ext_resource type="Script" path="res://SpriteGenerator.gd" id="1_7djfm"]
+
+[node name="Main" type="Node"]
+script = ExtResource( "1_7djfm" )
