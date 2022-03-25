@@ -78,7 +78,7 @@ func mirror_img(im: Image) -> Image:
 	return im_mir
 
 
-# Converts mask (2D Array) to Image
+# Sprite matrix to Image
 func matrix_to_image(matrix: Array, scale: int = 1) -> Image:
 	var img: Image = Image.new()
 	img.create(matrix[0].size(), matrix.size(), false, Image.FORMAT_RGBA8)
