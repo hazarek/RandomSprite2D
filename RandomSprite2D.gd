@@ -1,40 +1,51 @@
-extends Node
+@tool
+extends Sprite2D
+class_name RandomSprite2D
 
-#     0 = Empty
+@export var noise: bool = false
+@export var rand_color: bool = true
+@export var border_darkness: float = 0.9
+@export var body_color: Color = Color.WHITE
+@export var empty_color: Color = Color.TRANSPARENT
+@export var border_color: Color = Color.BLACK
+@export var pixel_scale: int = 4
+#     0 = Empty aaa
 #    -1 = Always solid
 #     1 = Randomly chosen Empty/Body
 #     2 = Randomly chosen Solid/Body (cockpit)
-var space := [
-	[0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 1, 1],
-	[0, 0, 0, 0, 0, 1,-1],
-	[0, 0, 0, 0, 1, 1,-1],
-	[0, 0, 0, 0, 1, 1,-1],
-	[0, 0, 0, 1, 1, 1,-1],
-	[0, 0, 1, 1, 1, 2, 2],
-	[0, 0, 1, 1, 1, 2, 2],
-	[0, 0, 1, 1, 1, 2, 2],
-	[0, 0, 1, 1, 1, 1,-1],
-	[0, 0, 0, 0, 1, 1, 1],
-	[0, 0, 0, 0, 0, 0, 0]
+
+var _space := [
+	[0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 1, 1],
+	[0, 0, 0, 0, 0, 0, 1,-1],
+	[0, 0, 0, 0, 0, 1, 1,-1],
+	[0, 0, 0, 0, 0, 1, 1,-1],
+	[0, 0, 0, 0, 1, 1, 1,-1],
+	[0, 0, 1, 1, 1, 1, 2, 2],
+	[0, 0, 1, 1, 1, 1, 2, 2],
+	[0, 0, 1, 1, 1, 1, 2, 2],
+	[0, 0, 1, 1, 1, 1, 1,-1],
+	[0, 0, 1, 1, 1, 1, 1,-1],
+	[0, 0, 1, 1, 1, 1, 1,-1],
+	[0, 0, 1, 1, 1, 1, 1,-1],
+	[0, 0, 1, 1, 1, 1, 1,-1],
+	[0, 0, 0, 0, 0, 1, 1, 1],
+	[0, 0, 0, 0, 0, 0, 0, 0]
 ]
-
-var noise: bool = true
-var rand_color: bool = true
-var body_color: Color = Color.WHITE
-var empty_color: Color = Color.TRANSPARENT
-var border_color: Color = Color.BLACK
-
+var mask = _space
+var im_texture: ImageTexture
 
 func _ready():
-	var arr = generate(space)
-	var mask_img = mask_to_image(space, 8)
-	var img = matrix_to_image(arr, 8)
+	randomize_sprite_texture()
+func randomize_sprite_texture():
+	im_texture = ImageTexture.new()
+	texture_filter = TEXTURE_FILTER_NEAREST
+	var arr = generate(mask)
+	var img = matrix_to_image(arr, pixel_scale)
 	img = mirror_img(img)
-	mask_img = mirror_img(mask_img)
-	img.save_png("user://space_sprite.png")
-	mask_img.save_png("user://space_mask.png")
-
+	im_texture.create_from_image(img)
+	texture = im_texture
+	
 
 func generate(mask: Array) -> Array:
 	var w = mask[0].size()
@@ -86,7 +97,7 @@ func matrix_to_image(matrix: Array, scale: int = 1) -> Image:
 	if rand_color:
 		body_color = Color.from_hsv(randf(), 0.6, 0.9)
 #		border_color = Color.from_hsv(randf(), 0.6, 0.3)
-		border_color = body_color.darkened(0.7)
+		border_color = body_color.darkened(border_darkness)
 
 	for x in range(matrix[0].size()):
 		for y in range(matrix.size()):
